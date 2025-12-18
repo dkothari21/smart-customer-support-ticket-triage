@@ -16,7 +16,7 @@ The Gemini API key is stored in an environment variable instead of being hardcod
 
 1. **Create a `.env` file** in the project root:
    ```bash
-   cd /Users/dipkothari/Project/smart-customer-support-ticket-triage
+   cd smart-customer-support-ticket-triage
    touch .env
    ```
 

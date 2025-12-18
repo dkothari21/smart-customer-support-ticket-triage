@@ -52,7 +52,7 @@ This system implements an **event-driven architecture** using Spring's built-in 
 
 ### 1. Clone the repository
 ```bash
-cd /Users/dipkothari/Project/smart-customer-support-ticket-triage
+cd smart-customer-support-ticket-triage
 ```
 
 ### 2. Configure Gemini API

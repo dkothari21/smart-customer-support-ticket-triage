@@ -23,7 +23,7 @@ java version "17.0.x"
 
 ### 1. Navigate to Project Directory
 ```bash
-cd /Users/dipkothari/Project/smart-customer-support-ticket-triage
+cd smart-customer-support-ticket-triage
 ```
 
 ### 2. Verify Gemini API Configuration

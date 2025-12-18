@@ -40,7 +40,7 @@ graph TB
     H --> I
     C -->|Publish event| F
     F -->|TicketClassificationEvent| G
-    G -->|@EventListener| D
+    G -->|EventListener| D
     D -->|Fetch ticket| H
     D -->|Classify| E
     E -->|API call| J
