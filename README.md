@@ -1,21 +1,50 @@
 # Smart Customer Support Ticket Triage System
 
-An intelligent customer support ticket classification system built with Spring Boot that automatically categorizes, prioritizes, and assigns sentiment scores to support tickets using Google Gemini AI.
+AI-powered customer support ticket classification using Google Gemini and Spring Boot. Automatically categorizes, prioritizes, and analyzes sentiment of support tickets in real-time.
 
-## 🚀 Features
+## ✨ Features
 
-- **Instant Ticket Submission**: REST API accepts tickets and returns immediately with PENDING status
-- **Asynchronous AI Processing**: Tickets are classified in the background using Spring Events
-- **Gemini AI Integration**: Powered by Google's Gemini 1.5 Flash for accurate classification
-- **Automatic Categorization**: Classifies tickets into BILLING, TECH_SUPPORT, BUG, FEATURE_REQUEST, or GENERAL
-- **Smart Prioritization**: Assigns priority levels (LOW, MEDIUM, HIGH, URGENT)
-- **Sentiment Analysis**: Rates customer sentiment on a 1-10 scale
-- **Real-time Statistics**: Track classification metrics and ticket distribution
-- **H2 Database**: Embedded database for easy development and testing
+- **Instant Ticket Submission** - REST API returns immediately with PENDING status
+- **Asynchronous AI Processing** - Background classification using Spring Events
+- **Google Gemini AI** - Powered by `gemini-2.5-flash-lite` for accurate classification
+- **Auto-Categorization** - BILLING, TECH_SUPPORT, BUG, FEATURE_REQUEST, GENERAL
+- **Smart Prioritization** - LOW, MEDIUM, HIGH, URGENT
+- **Sentiment Analysis** - 1-10 scale customer sentiment rating
+- **Swagger UI** - Interactive API documentation and testing
+- **110+ Test Tickets** - Pre-loaded realistic dataset
+
+## 🚀 Quick Start
+
+```bash
+# 1. Get your Gemini API key from https://makersuite.google.com/app/apikey
+
+# 2. Configure environment
+echo "GEMINI_API_KEY=your-key-here" > .env
+
+# 3. Run the application
+export $(cat .env | xargs) && ./gradlew bootRun
+
+# 4. Open Swagger UI
+open http://localhost:8080/swagger-ui.html
+```
+
+**That's it!** Start testing with Swagger UI or see the full guide below.
+
+## 📚 Documentation
+
+### Getting Started
+**[📖 Getting Started Guide](docs/GETTING_STARTED.md)** - Complete setup, configuration, and first run
+
+### API Usage
+**[🔌 API Guide](docs/API_GUIDE.md)** - Swagger UI and cURL testing examples
+
+### Technical Deep Dive
+- **[🏗️ Architecture](docs/ARCHITECTURE.md)** - Event-driven design and components
+- **[🤖 Gemini Flow](docs/GEMINI_FLOW.md)** - How AI classification works
 
 ## 🏗️ Architecture
 
-This system implements an **event-driven architecture** using Spring's built-in capabilities:
+Event-driven architecture using Spring Events:
 
 ```
 ┌─────────────────┐      ┌──────────────┐      ┌─────────────────┐
@@ -28,160 +57,137 @@ This system implements an **event-driven architecture** using Spring's built-in 
    immediately                                  Updates to CLASSIFIED
 ```
 
-**Producer**: `TicketService` creates tickets and publishes events  
-**Consumer**: `AsyncTicketProcessor` listens for events and processes tickets asynchronously  
-**Message Broker**: Spring's `ApplicationEventPublisher` (in-memory)
+**Benefits**: Non-blocking, scalable, resilient, easy to test
 
 ## 🛠️ Technology Stack
 
-- **Java 17**
-- **Spring Boot 3.3.6**
-- **Spring AI Vertex** (Gemini integration)
-- **Spring Data JPA**
-- **H2 Database**
-- **Lombok**
-- **Gradle**
+- **Java 17** - Modern Java features
+- **Spring Boot 3.3.6** - Framework
+- **Google Gemini AI** - Direct REST API integration
+- **Spring Data JPA** - Data access
+- **H2 Database** - Embedded database
+- **Swagger/OpenAPI** - API documentation
+- **Lombok** - Boilerplate reduction
+- **Gradle** - Build tool
 
-## 📋 Prerequisites
+## 🧪 Quick Test
 
-- Java 17 or higher
-- Google Cloud account with Gemini API access
-- Gemini API key
+### Using Swagger UI (Recommended)
+1. Open http://localhost:8080/swagger-ui.html
+2. Try **POST /api/tickets** with:
+   ```json
+   {
+     "subject": "App crashes on startup",
+     "description": "The app crashes when I open it"
+   }
+   ```
+3. Wait 5 seconds
+4. Check classification with **GET /api/tickets/{id}**
 
-## 🚦 Quick Start
-
-### 1. Clone the repository
+### Using cURL
 ```bash
-cd smart-customer-support-ticket-triage
-```
-
-### 2. Configure Gemini API
-The API key is already configured in `src/main/resources/application.yml`. If you need to change it:
-```yaml
-spring:
-  ai:
-    vertex:
-      ai:
-        gemini:
-          api-key: YOUR_API_KEY_HERE
-```
-
-### 3. Build the project
-```bash
-./gradlew clean build
-```
-
-### 4. Run the application
-```bash
-./gradlew bootRun
-```
-
-The application will start on `http://localhost:8080`
-
-## 📚 Documentation
-
-- **[Setup Guide](docs/SETUP.md)** - Detailed installation and configuration
-- **[Architecture Overview](docs/ARCHITECTURE.md)** - System design and components
-- **[API Testing Guide](docs/API_TESTING.md)** - How to test all endpoints
-
-## 🧪 Testing the System
-
-### Submit a ticket
-```bash
+# Submit ticket
 curl -X POST http://localhost:8080/api/tickets \
   -H "Content-Type: application/json" \
   -d '{
-    "subject": "My credit card was charged twice!",
-    "description": "I was charged $99.99 twice for the same subscription. Please refund one charge immediately."
+    "subject": "Charged twice this month",
+    "description": "I see two charges of $49.99"
   }'
-```
 
-### Check ticket status
-```bash
-curl http://localhost:8080/api/tickets/1
-```
+# Check status (wait 5 seconds, replace {id})
+curl http://localhost:8080/api/tickets/{id}
 
-### View statistics
-```bash
+# View statistics
 curl http://localhost:8080/api/tickets/stats
 ```
 
-## 📊 Sample Dataset
+## 📊 API Endpoints
 
-The application comes pre-loaded with **110+ realistic support tickets** covering:
-- 30 Billing issues
-- 30 Technical support requests
-- 25 Bug reports
-- 15 Feature requests
-- 10 General inquiries
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/tickets` | Submit new ticket |
+| GET | `/api/tickets/{id}` | Get ticket details |
+| GET | `/api/tickets` | List all tickets |
+| GET | `/api/tickets?status=X` | Filter by status |
+| GET | `/api/tickets?category=X` | Filter by category |
+| GET | `/api/tickets?priority=X` | Filter by priority |
+| GET | `/api/tickets/stats` | Get statistics |
 
 ## 🗄️ Database Access
 
-Access the H2 console at: `http://localhost:8080/h2-console`
+H2 Console: http://localhost:8080/h2-console
 
 - **JDBC URL**: `jdbc:h2:file:./data/ticketdb`
 - **Username**: `sa`
 - **Password**: *(leave empty)*
 
-## 📖 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/tickets` | Submit a new ticket |
-| GET | `/api/tickets/{id}` | Get ticket by ID |
-| GET | `/api/tickets` | List all tickets |
-| GET | `/api/tickets?status=PENDING` | Filter by status |
-| GET | `/api/tickets?category=BILLING` | Filter by category |
-| GET | `/api/tickets?priority=HIGH` | Filter by priority |
-| GET | `/api/tickets/stats` | Get classification statistics |
-
 ## 🔄 How It Works
 
-1. **User submits a ticket** via REST API
-2. **System saves ticket** with status `PENDING` and returns immediately
-3. **Event is published** to Spring's event system
-4. **Async processor picks up the event** in a separate thread
-5. **Gemini AI analyzes** the ticket content
-6. **System updates ticket** with category, priority, and sentiment
-7. **Status changes to** `CLASSIFIED`
+1. User submits ticket → Returns immediately with `PENDING`
+2. Event published → Async processor picks it up
+3. Gemini AI analyzes → Classifies ticket
+4. Database updated → Status changes to `CLASSIFIED`
 
-## 🎯 Event-Driven Architecture
+**Average classification time**: 3-5 seconds
 
-This system demonstrates event-driven principles:
-- ✅ **Decoupling**: Producer and consumer are independent
-- ✅ **Asynchronous**: Non-blocking ticket submission
-- ✅ **Scalable**: Thread pool handles concurrent processing
-- ✅ **Resilient**: Failed classifications are tracked
+## 🎯 Classification Examples
+
+| Ticket | Category | Priority | Sentiment |
+|--------|----------|----------|-----------|
+| "Charged twice!" | BILLING | HIGH | 2 (negative) |
+| "App crashes" | BUG | HIGH | 3 (frustrated) |
+| "Add dark mode" | FEATURE_REQUEST | LOW | 7 (positive) |
+| "How to reset password?" | TECH_SUPPORT | MEDIUM | 5 (neutral) |
 
 ## 🔧 Configuration
 
-Key configuration options in `application.yml`:
+Key settings in `application.yml`:
 
 ```yaml
-# Thread pool for async processing
 spring:
-  task:
-    execution:
-      pool:
-        core-size: 10
-        max-size: 50
-
-# Gemini model settings
-spring:
-  ai:
-    vertex:
-      ai:
-        gemini:
-          chat:
-            options:
-              model: gemini-1.5-flash
-              temperature: 0.3
+  gemini:
+    api-key: ${GEMINI_API_KEY}  # From environment variable
+    model: gemini-2.5-flash-lite
+    temperature: 0.3
+    max-tokens: 1000
 ```
 
-## 📝 License
+Thread pool (in `AsyncConfig.java`):
+- Core: 10 threads
+- Max: 50 threads
+- Queue: 100 tasks
 
-This project is created for educational purposes.
+## 🔒 Security
+
+- ✅ API key in environment variable (not committed)
+- ✅ `.env` file in `.gitignore`
+- ✅ Input validation on all endpoints
+- ✅ SQL injection prevention (JPA)
+
+## 📝 Sample Dataset
+
+110+ pre-loaded tickets:
+- 30 Billing issues
+- 30 Technical support
+- 25 Bug reports
+- 15 Feature requests
+- 10 General inquiries
+
+## 🚦 Next Steps
+
+1. **[Get Started](docs/GETTING_STARTED.md)** - Set up your environment
+2. **[Test the API](docs/API_GUIDE.md)** - Try Swagger UI
+3. **[Learn the Architecture](docs/ARCHITECTURE.md)** - Understand the design
+4. **[Explore Gemini Flow](docs/GEMINI_FLOW.md)** - See how AI works
+
+## 📄 License
+
+MIT License - Created for educational purposes
 
 ## 👨‍💻 Author
 
 Built with ❤️ using Spring Boot and Google Gemini AI
+
+---
+
+**Repository**: https://github.com/dkothari21/smart-customer-support-ticket-triage
